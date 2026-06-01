@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //Adder PC+Imm_Gen
 module Adder (
     input [7:0] in_1, input [7:0] in_2, output [7:0] Add_out   

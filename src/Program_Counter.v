@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //Program Counter
 module Program_Counter(input clk, input rst, input PC_enable_sig, input [7:0] PC_in, output [7:0] PC_out);
 

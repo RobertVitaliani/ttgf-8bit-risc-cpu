@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //Data memory
 module Data_Memory (
     input clk, input rst, input [7:0] Adress, input PC_enable_sig, input MemWrite, input MemRead, input [7:0] WriteData, output [7:0] MemData_Out

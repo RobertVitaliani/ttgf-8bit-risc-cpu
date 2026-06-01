@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //register file
 module Registers (
     input clk, input rst, input RegWrite,input [2:0] rs1, input [2:0] rs2, input [2:0] rd, input [7:0] write_data, output [7:0] reg_data_1, output [7:0] reg_data_2);

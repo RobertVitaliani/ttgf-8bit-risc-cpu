@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //ALU 
 module ALU(
     input [7:0] A, input [7:0] B, input [2:0] ALU_Op_in, output reg zero, output reg less_than, output reg [7:0] ALU_result 

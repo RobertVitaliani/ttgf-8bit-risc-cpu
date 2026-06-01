@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module Branch_Control (
     input is_beq, input is_bne, input is_blt, input zero, input less_than, output branch_control_top
 );

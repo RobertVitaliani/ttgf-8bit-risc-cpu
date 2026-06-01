@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //Control module
 module Control_Unit (
     input [3:0] Instruction, input [2:0] funct3, output reg PC_enable_sig, output reg Control_Mux_out_sig, output reg is_BEQ ,output reg is_BNE, output reg is_BLT ,output reg MemRead, output reg MemToReg, output reg [2:0] ALUOp, output reg MemWrite, output reg ALUSrc, output reg RegWrite

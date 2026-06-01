@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //Immediate_Generator
 module Imm_Gen (input [15:0] Instruction, output reg [7:0] Imm_Out);
     
