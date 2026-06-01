@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 //Mux1
 module Mux1 (
     input sel1, input[7:0] A1, input[7:0] B1, output[7:0] mux1_out

@@ -49,13 +49,17 @@ Immediate, load/store, and branch style instructions:
 
 The `LI` instruction uses `instruction[7:0]` as its 8-bit immediate.
 
+For `SW`, the source data register is encoded in `instruction[5:3]`. These
+bits are also part of the current 6-bit immediate field, so the store source
+register and store offset are not fully independent in this ISA encoding.
+
 ### Opcodes
 
 | Opcode | Mnemonic | Operation |
 | --- | --- | --- |
 | `0000` | R-type | ALU operation selected by `funct3` |
 | `0001` | ADDI | `rd = rs1 + imm6` |
-| `0010` | LI | `rd = rs1 + imm8` |
+| `0010` | LI | `rd = imm8` |
 | `0011` | LW | `rd = memory[rs1 + imm6]` |
 | `0100` | SW | `memory[rs1 + imm6] = rs2` |
 | `0101` | BEQ | branch when `rs1 == imm6` |

@@ -77,6 +77,17 @@ async def reset_dut(dut):
     await Timer(1, unit="ns")
 
 
+async def check_reset_register(dut, register_index, expected_value):
+    await reset_dut(dut)
+    destination = 6 if register_index == 7 else 7
+    await execute_and_check(
+        dut,
+        i_type(OP_ADDI, rd=destination, rs1=register_index, imm6=0),
+        expected_value,
+        expected_pc=1,
+    )
+
+
 @cocotb.test()
 async def test_project(dut):
     dut._log.info("Start")
@@ -91,7 +102,18 @@ async def test_project(dut):
     assert dut.uio_out.value.to_unsigned() == 0
     assert dut.uio_oe.value.to_unsigned() == 0
 
+    dut._log.info("Run reset and no-op sequence")
+
+    reset_values = (1, 4, 2, 24, 0, 4, 2, 24)
+    for register_index, expected_value in enumerate(reset_values):
+        await check_reset_register(dut, register_index, expected_value)
+
+    await reset_dut(dut)
+    await execute_and_check(dut, 0xF000, 0, expected_pc=0)
+    await execute_and_check(dut, 0xE000, 0, expected_pc=0)
+
     dut._log.info("Run load-immediate sequence")
+    await reset_dut(dut)
 
     await execute_and_check(dut, li_type(rd=6, imm8=42), 42, expected_pc=1)
     await execute_and_check(dut, li_type(rd=5, imm8=0xA5), 0xA5, expected_pc=2)

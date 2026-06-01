@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 //Instantiation and connect
 module CPU_Core (
     input clk, input rst, input[15:0] instruction, output [7:0] CPU_out
