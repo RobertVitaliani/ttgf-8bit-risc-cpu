@@ -14,5 +14,6 @@ module Imm_Gen (input [15:0] Instruction, output reg [7:0] Imm_Out);
         endcase
     end
 
+    wire _unused = &{Instruction[11:8], 1'b0};
 
 endmodule
