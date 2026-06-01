@@ -96,7 +96,8 @@ After reset, the register file is initialized with these values:
 ## How to test
 
 To use the design, provide a clock on `clk`, release reset by setting `rst_n`
-high, and drive one 16-bit instruction at a time on `{ui_in, uio_in}`.
+high, and drive one 16-bit instruction at a time on `{ui_in, uio_in}`. The
+project is configured for a 10 MHz clock target.
 
 Example instruction sequence:
 
