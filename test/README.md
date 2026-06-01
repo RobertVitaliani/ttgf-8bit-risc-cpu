@@ -1,46 +1,99 @@
-# Sample testbench for a Tiny Tapeout project
+# Testbench
 
-This is a sample testbench for a Tiny Tapeout project. It uses [cocotb](https://docs.cocotb.org/en/stable/) to drive the DUT and check the outputs.
-See below to get started or for more information, check the [website](https://tinytapeout.com/hdl/testing/).
+This directory contains the cocotb testbench for `tt_um_8bit_risc_cpu`.
 
-## Setting up
+The testbench instantiates the Tiny Tapeout top module through `tb.v` and drives
+16-bit CPU instructions using:
 
-1. Edit [Makefile](Makefile) and modify `PROJECT_SOURCES` to point to your Verilog files.
-2. Edit [tb.v](tb.v) and replace `tt_um_example` with your module name.
-
-## How to run
-
-To run the RTL simulation:
-
-```sh
-make -B
+```text
+ui_in[7:0]  = instruction[15:8]
+uio_in[7:0] = instruction[7:0]
 ```
 
-To run gatelevel simulation, first harden your project and copy `../runs/wokwi/results/final/verilog/gl/{your_module_name}.v` to `gate_level_netlist.v`.
+## What The Test Covers
 
-Then run:
+The included `test.py` test checks:
+
+- reset values for all eight registers
+- NOP and unsupported-opcode behavior
+- `LI` and signed 6-bit immediates
+- R-type ALU operations
+- I-type ALU operations
+- data memory store/load behavior
+- branch behavior and PC updates
+- `uio_out = 0` and `uio_oe = 0`
+
+## Run RTL Simulation
+
+From this directory:
 
 ```sh
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+make
+```
+
+or from the repository root:
+
+```sh
+cd test
+make
+```
+
+A passing run ends with:
+
+```text
+TESTS=1 PASS=1 FAIL=0
+```
+
+## Run Gate-Level Simulation
+
+First run local hardening or download the GDS action artifacts so that a powered
+netlist is available.
+
+For a local GF180 hardening run, the netlist is normally here:
+
+```text
+../runs/wokwi/final/pnl/tt_um_8bit_risc_cpu.pnl.v
+```
+
+Copy it into this directory:
+
+```sh
+cp ../runs/wokwi/final/pnl/tt_um_8bit_risc_cpu.pnl.v gate_level_netlist.v
+```
+
+Set the GF180 PDK environment and run:
+
+```sh
+export PDK=gf180mcuD
+export PDK_ROOT=/path/to/pdk/root
+
 make -B GATES=yes
 ```
 
-If you wish to save the waveform in VCD format instead of FST format, edit tb.v to use `$dumpfile("tb.vcd");` and then run:
+`PDK_ROOT` must point to a directory that contains `gf180mcuD`. If the PDK was
+installed through Ciel, run `ciel enable` first or point `PDK_ROOT` at the
+enabled Ciel version directory.
 
-```sh
-make -B FST=
+Expected result:
+
+```text
+TESTS=1 PASS=1 FAIL=0
 ```
 
-This will generate `tb.vcd` instead of `tb.fst`.
+## Waveforms
 
-## How to view the waveform file
+The testbench writes `tb.fst`.
 
-Using GTKWave
+Open it with GTKWave:
 
 ```sh
 gtkwave tb.fst tb.gtkw
 ```
 
-Using Surfer
+or with Surfer:
 
 ```sh
 surfer tb.fst
