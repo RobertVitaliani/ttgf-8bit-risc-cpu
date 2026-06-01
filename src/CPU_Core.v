@@ -42,7 +42,7 @@ module CPU_Core (
     wire RegWrite_wire, ALUSrc_wire, MemWrite_wire, MemRead_wire, MemToReg_wire, Is_beq_wire, Is_bne_wire, Is_blt_wire, zero_wire, less_than_wire;
 
     wire [7:0] PC_top_wire, CPU_result_wire, PCplus4_Top, SUM_top, PC_input_wire, Imm_Gen_out_wire;
-    wire [7:0] Reg_data1_wire, Reg_data2_wire, ALU_Mux_top, ALU_Top, MemData_out_wire;
+    wire [7:0] Reg_data1_wire, Reg_data2_wire, ALU_A_top, ALU_Mux_top, ALU_Top, MemData_out_wire;
     
     wire [2:0] ALUOp_wire;
 
@@ -103,7 +103,9 @@ module CPU_Core (
                     .Imm_Out(Imm_Gen_out_wire)
                     );
 
-    ALU ALU( .A(Reg_data1_wire), 
+    assign ALU_A_top = (current_instruction[15:12] == 4'b0010) ? 8'b0 : Reg_data1_wire;
+
+    ALU ALU( .A(ALU_A_top),
              .B(ALU_Mux_top), 
              .ALU_Op_in(ALUOp_wire), 
              .zero(zero_wire),
