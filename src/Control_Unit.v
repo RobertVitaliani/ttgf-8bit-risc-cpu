@@ -61,7 +61,6 @@ module Control_Unit (
                     3'b100: ALUOp= 3'b100; //xor
                     3'b101: ALUOp= 3'b101; //sll
                     3'b110: ALUOp= 3'b110; //slr
-                    default: ALUOp= 3'b000;
 
                 endcase
 
@@ -126,7 +125,7 @@ module Control_Unit (
                 MemToReg=1;
                 RegWrite=0;
                 MemRead=0;
-                MemWrite=0;
+                MemWrite=1;
                 
                 ALUOp=3'b001; //SUB
 
