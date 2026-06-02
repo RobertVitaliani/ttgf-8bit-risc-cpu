@@ -1,6 +1,13 @@
 //Data memory
 module Data_Memory (
-    input clk, input rst, input [7:0] Adress, input PC_enable_sig, input MemWrite, input MemRead, input [7:0] WriteData, output [7:0] MemData_Out
+    input        clk,
+    input        rst,
+    input  [7:0] Adress,
+    input        PC_enable_sig,
+    input        MemWrite,
+    input        MemRead,
+    input  [7:0] WriteData,
+    output [7:0] MemData_Out
 );
     wire [3:0] address_index = Adress[3:0];
     reg [7:0] read_data;
@@ -84,7 +91,7 @@ module Data_Memory (
         endcase
     end
 
-    assign MemData_Out= (MemRead)? read_data: 8'b0;
+    assign MemData_Out = (MemRead) ? read_data : 8'b0;
 
     wire _unused = &{Adress[7:4], 1'b0};
 endmodule
