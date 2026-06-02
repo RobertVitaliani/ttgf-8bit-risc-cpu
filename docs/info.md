@@ -42,6 +42,16 @@ ui_in  = instruction[15:8]
 uio_in = instruction[7:0]
 ```
 
+For example, instruction `0x1843` is driven as:
+
+```text
+ui_in  = 0x18
+uio_in = 0x43
+```
+
+This means `ui_in[0]` carries `instruction[8]`, and `uio_in[0]` carries
+`instruction[0]`.
+
 ## Execution Timing
 
 The CPU alternates between two internal phases:
@@ -54,6 +64,15 @@ For normal use, keep each instruction stable for two clock cycles.
 During the execute phase, `uo_out` shows the instruction result. On the next
 clock edge, register, memory, and PC updates are committed. During the following
 NOP / PC phase, `uo_out` shows the current program counter.
+
+One instruction slot looks like this:
+
+| Moment | External action / observation |
+| --- | --- |
+| Before clock edge 1 | Drive the 16-bit instruction and keep it stable |
+| After clock edge 1 | `uo_out` shows the instruction result |
+| Clock edge 2 | The register file, data memory, and PC update |
+| After clock edge 2 | `uo_out` shows the updated PC |
 
 Typical external-controller sequence:
 
@@ -107,6 +126,9 @@ next_pc = pc + imm6
 PC arithmetic wraps modulo 256.
 
 ## Instruction Encoding
+
+This is a compact custom ISA for this Tiny Tapeout design, not a standard
+RISC-V-compatible encoding.
 
 The opcode is always stored in `instruction[15:12]`.
 

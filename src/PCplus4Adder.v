@@ -1,4 +1,4 @@
-//Adder for PC+4
+//Adder for PC+1. The module name is kept from the original design.
 module PCplus4Adder (
     input  [7:0] FromPC,
     output [7:0] NextPC
