@@ -197,7 +197,7 @@ choice.
 | `0110` | BNE | branch when `rs1 != imm6` |
 | `0111` | BLT | branch when `rs1 < imm6` |
 | `1000` | ANDI | `rd = rs1 & imm6` |
-| `1001` | ORI | `rd = rs1 | imm6` |
+| `1001` | ORI | <code>rd = rs1 &#124; imm6</code> |
 | `1010` | XORI | `rd = rs1 ^ imm6` |
 | `1011` | SLLI | `rd = rs1 << imm6` |
 | `1100` | SLRI | `rd = rs1 >> imm6` |
