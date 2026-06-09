@@ -18,7 +18,7 @@ OP_ANDI = 0x8
 OP_ORI = 0x9
 OP_XORI = 0xA
 OP_SLLI = 0xB
-OP_SLRI = 0xC
+OP_SRLI = 0xC
 
 FUNCT_ADD = 0x0
 FUNCT_SUB = 0x1
@@ -26,7 +26,7 @@ FUNCT_AND = 0x2
 FUNCT_OR = 0x3
 FUNCT_XOR = 0x4
 FUNCT_SLL = 0x5
-FUNCT_SLR = 0x6
+FUNCT_SRL = 0x6
 
 
 def r_type(rd, rs1, rs2, funct3):
@@ -131,12 +131,12 @@ async def test_project(dut):
     await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_OR), 15, expected_pc=6)
     await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_XOR), 14, expected_pc=7)
     await execute_and_check(dut, r_type(rd=6, rs1=2, rs2=1, funct3=FUNCT_SLL), 32, expected_pc=8)
-    await execute_and_check(dut, r_type(rd=6, rs1=3, rs2=2, funct3=FUNCT_SLR), 6, expected_pc=9)
+    await execute_and_check(dut, r_type(rd=6, rs1=3, rs2=2, funct3=FUNCT_SRL), 6, expected_pc=9)
     await execute_and_check(dut, i_type(OP_ANDI, rd=6, rs1=5, imm6=6), 0, expected_pc=10)
     await execute_and_check(dut, i_type(OP_ORI, rd=6, rs1=4, imm6=8), 15, expected_pc=11)
     await execute_and_check(dut, i_type(OP_XORI, rd=6, rs1=5, imm6=3), 10, expected_pc=12)
     await execute_and_check(dut, i_type(OP_SLLI, rd=6, rs1=2, imm6=2), 8, expected_pc=13)
-    await execute_and_check(dut, i_type(OP_SLRI, rd=6, rs1=3, imm6=3), 3, expected_pc=14)
+    await execute_and_check(dut, i_type(OP_SRLI, rd=6, rs1=3, imm6=3), 3, expected_pc=14)
     await execute_and_check(dut, i_type(OP_ADDI, rd=6, rs1=1, imm6=0x3F), 3, expected_pc=15)
 
     dut._log.info("Run memory and branch side-effect sequence")

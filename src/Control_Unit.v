@@ -29,7 +29,7 @@ module Control_Unit (
     localparam OP_XORI = 4'b1010;
     localparam OP_SLLI = 4'b1011;
 
-    localparam OP_SLRI = 4'b1100;
+    localparam OP_SRLI = 4'b1100;
     //localparam OP_BEQ = 4'b1101;
     //localparam OP_BNE = 4'b1110;
     localparam NOP = 4'b1111;
@@ -71,13 +71,13 @@ module Control_Unit (
                     3'b011: ALUOp = 3'b011; //or
                     3'b100: ALUOp = 3'b100; //xor
                     3'b101: ALUOp = 3'b101; //sll
-                    3'b110: ALUOp = 3'b110; //slr
+                    3'b110: ALUOp = 3'b110; //srl
                     default: ALUOp = 3'b000;
                 endcase
             end
 
-            //I_FORMAT 1.ADDI 2.LI 8.ANDI 9.ORI 10.XORI 11.SLLI 12.SLRI
-            OP_ADDI, OP_LI, OP_ANDI, OP_ORI, OP_XORI, OP_SLLI, OP_SLRI: begin
+            //I_FORMAT 1.ADDI 2.LI 8.ANDI 9.ORI 10.XORI 11.SLLI 12.SRLI
+            OP_ADDI, OP_LI, OP_ANDI, OP_ORI, OP_XORI, OP_SLLI, OP_SRLI: begin
                 PC_enable_sig = 1;
                 Control_Mux_out_sig = 1;
                 ALUSrc = 1;
@@ -94,7 +94,7 @@ module Control_Unit (
                 if(Instruction == OP_ORI) ALUOp = 3'b011;
                 if(Instruction == OP_XORI) ALUOp = 3'b100;
                 if(Instruction == OP_SLLI) ALUOp = 3'b101;
-                if(Instruction == OP_SLRI) ALUOp = 3'b110;
+                if(Instruction == OP_SRLI) ALUOp = 3'b110;
             end 
 
             //3. I_format lw   

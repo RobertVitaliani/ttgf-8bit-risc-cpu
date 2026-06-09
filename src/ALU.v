@@ -53,7 +53,7 @@ module ALU (
                 less_than = 0;
             end 
 
-            //SLR
+            //SRL
             3'b110: begin
                 ALU_result = A >> B;
                 zero = 0;
