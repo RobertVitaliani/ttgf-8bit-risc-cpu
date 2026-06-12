@@ -28,7 +28,7 @@ FUNCT_XOR = 0x4
 FUNCT_SLL = 0x5
 FUNCT_SRL = 0x6
 
-CLOCK_PERIOD_NS = 100
+CLOCK_PERIOD_NS = 200
 
 
 def r_type(rd, rs1, rs2, funct3):

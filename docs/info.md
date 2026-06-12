@@ -17,7 +17,7 @@ Main building blocks:
 - branch-control logic
 - 16-byte data memory
 
-The target clock configured for this project is 10 MHz.
+The target clock configured for this project is 5 MHz.
 
 ## Pin Interface
 
