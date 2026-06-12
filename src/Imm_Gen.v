@@ -1,7 +1,7 @@
 //Immediate_Generator
 module Imm_Gen (
-    input      [15:0] Instruction,
-    output reg [7:0]  Imm_Out
+    input             [15:0] Instruction,
+    output reg signed [7:0]  Imm_Out
 );
     
     wire [3:0] opcode = Instruction[15:12];

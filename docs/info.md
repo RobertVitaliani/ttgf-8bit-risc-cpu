@@ -220,8 +220,12 @@ R-type instructions use `funct3`.
 | `110` | Shift right |
 | `111` | Defaults to ADD |
 
+Shift operations use the lower three bits of the second ALU operand as the
+shift amount, giving a range from 0 to 7 positions.
+
 The branch instructions use the SUB path internally to generate comparison
-flags. The less-than comparison is unsigned.
+flags. The less-than comparison is signed, so both operands are interpreted as
+8-bit two's-complement values.
 
 ## Worked Examples
 

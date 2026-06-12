@@ -144,9 +144,9 @@ module Control_Unit (
             end  
 
             //NOP
-            NOP : {PC_enable_sig, Control_Mux_out_sig, is_BEQ, is_BNE, is_BLT, MemToReg, MemRead, MemWrite, ALUSrc, ALUOp, RegWrite} = 13'b00_000_000_0_000_0;
+            NOP : {PC_enable_sig, Control_Mux_out_sig, ALUSrc, MemToReg, RegWrite, MemRead, MemWrite, is_BEQ, is_BNE, is_BLT, ALUOp} = 13'b00_000_000_0_000_0;
 
-            default: {PC_enable_sig, Control_Mux_out_sig, is_BEQ, is_BNE, is_BLT, MemToReg, MemRead, MemWrite, ALUSrc, ALUOp, RegWrite} = 13'b00_000_000_0_000_0;
+            default: {PC_enable_sig, Control_Mux_out_sig, ALUSrc, MemToReg, RegWrite, MemRead, MemWrite, is_BEQ, is_BNE, is_BLT, ALUOp} = 13'b00_000_000_0_000_0;
         endcase
     end
 

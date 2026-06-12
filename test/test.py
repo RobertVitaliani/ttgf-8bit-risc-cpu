@@ -163,3 +163,42 @@ async def test_project(dut):
     await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=1, imm6=4), 0, expected_pc=7)
     await execute_and_check(dut, i_type(OP_BNE, rd=0, rs1=0, imm6=0x3F), 0, expected_pc=6)
     await execute_and_check(dut, i_type(OP_BLT, rd=0, rs1=2, imm6=5), 0, expected_pc=11)
+
+    dut._log.info("Run signed BLT edge cases")
+    await reset_dut(dut)
+
+    # Signed comparison: 1 is not less than -1. An unsigned comparison would
+    # incorrectly take this branch because 0xFF represents 255.
+    await execute_and_check(
+        dut,
+        i_type(OP_BLT, rd=0, rs1=0, imm6=0x3F),
+        0,
+        expected_pc=1,
+    )
+
+    # Load -1 into r6, then verify that -1 is less than +2.
+    await execute_and_check(dut, li_type(rd=6, imm8=0xFF), 0xFF, expected_pc=2)
+    await execute_and_check(
+        dut,
+        i_type(OP_BLT, rd=0, rs1=6, imm6=2),
+        0,
+        expected_pc=4,
+    )
+
+    # SRLI remains a logical shift even when the source value is negative.
+    await execute_and_check(dut, li_type(rd=6, imm8=0x80), 0x80, expected_pc=5)
+    await execute_and_check(
+        dut,
+        i_type(OP_SRLI, rd=7, rs1=6, imm6=1),
+        0x40,
+        expected_pc=6,
+    )
+
+    # Only the lower three shift-amount bits are used. imm6 = 0x3F therefore
+    # selects a shift by 7, not a shift by 255.
+    await execute_and_check(
+        dut,
+        i_type(OP_SRLI, rd=7, rs1=6, imm6=0x3F),
+        0x01,
+        expected_pc=7,
+    )
