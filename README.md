@@ -61,10 +61,9 @@ Hold each instruction stable for two clock cycles. During the execute phase,
 
 ## Example Instruction Sequence
 
-After reset, `r1 = 4` and `r4 = 0`.
-
 | Instruction | Encoding | Result |
 | --- | --- | --- |
+| `LI r1, 4` | `0x2204` | `r1 = 4` |
 | `ADDI r4, r1, 3` | `0x1843` | `r4 = 7` |
 | `ADDI r5, r4, 2` | `0x1B02` | `r5 = 9` |
 | `ADD r6, r4, r5` | `0x0D28` | `r6 = 16` |

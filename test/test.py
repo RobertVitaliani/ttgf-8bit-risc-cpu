@@ -28,6 +28,8 @@ FUNCT_XOR = 0x4
 FUNCT_SLL = 0x5
 FUNCT_SRL = 0x6
 
+CLOCK_PERIOD_NS = 100
+
 
 def r_type(rd, rs1, rs2, funct3):
     return (OP_R_TYPE << 12) | (rd << 9) | (rs1 << 6) | (rs2 << 3) | funct3
@@ -92,7 +94,7 @@ async def check_reset_register(dut, register_index, expected_value):
 async def test_project(dut):
     dut._log.info("Start")
 
-    clock = Clock(dut.clk, 10, unit="ns")
+    clock = Clock(dut.clk, CLOCK_PERIOD_NS, unit="ns")
     cocotb.start_soon(clock.start())
 
     dut._log.info("Reset")
@@ -104,7 +106,7 @@ async def test_project(dut):
 
     dut._log.info("Run reset and no-op sequence")
 
-    reset_values = (1, 4, 2, 24, 0, 4, 2, 24)
+    reset_values = (0, 0, 0, 0, 0, 0, 0, 0)
     for register_index, expected_value in enumerate(reset_values):
         await check_reset_register(dut, register_index, expected_value)
 
@@ -122,52 +124,60 @@ async def test_project(dut):
     dut._log.info("Run ALU and register sequence")
     await reset_dut(dut)
 
-    # Registers after reset: r1 = 4, r4 = 0.
-    await execute_and_check(dut, i_type(OP_ADDI, rd=4, rs1=1, imm6=3), 7, expected_pc=1)
-    await execute_and_check(dut, i_type(OP_ADDI, rd=5, rs1=4, imm6=2), 9, expected_pc=2)
-    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_ADD), 16, expected_pc=3)
-    await execute_and_check(dut, r_type(rd=7, rs1=5, rs2=4, funct3=FUNCT_SUB), 2, expected_pc=4)
-    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_AND), 1, expected_pc=5)
-    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_OR), 15, expected_pc=6)
-    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_XOR), 14, expected_pc=7)
-    await execute_and_check(dut, r_type(rd=6, rs1=2, rs2=1, funct3=FUNCT_SLL), 32, expected_pc=8)
-    await execute_and_check(dut, r_type(rd=6, rs1=3, rs2=2, funct3=FUNCT_SRL), 6, expected_pc=9)
-    await execute_and_check(dut, i_type(OP_ANDI, rd=6, rs1=5, imm6=6), 0, expected_pc=10)
-    await execute_and_check(dut, i_type(OP_ORI, rd=6, rs1=4, imm6=8), 15, expected_pc=11)
-    await execute_and_check(dut, i_type(OP_XORI, rd=6, rs1=5, imm6=3), 10, expected_pc=12)
-    await execute_and_check(dut, i_type(OP_SLLI, rd=6, rs1=2, imm6=2), 8, expected_pc=13)
-    await execute_and_check(dut, i_type(OP_SRLI, rd=6, rs1=3, imm6=3), 3, expected_pc=14)
-    await execute_and_check(dut, i_type(OP_ADDI, rd=6, rs1=1, imm6=0x3F), 3, expected_pc=15)
+    await execute_and_check(dut, li_type(rd=1, imm8=4), 4, expected_pc=1)
+    await execute_and_check(dut, li_type(rd=2, imm8=2), 2, expected_pc=2)
+    await execute_and_check(dut, li_type(rd=3, imm8=24), 24, expected_pc=3)
+    await execute_and_check(dut, i_type(OP_ADDI, rd=4, rs1=1, imm6=3), 7, expected_pc=4)
+    await execute_and_check(dut, i_type(OP_ADDI, rd=5, rs1=4, imm6=2), 9, expected_pc=5)
+    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_ADD), 16, expected_pc=6)
+    await execute_and_check(dut, r_type(rd=7, rs1=5, rs2=4, funct3=FUNCT_SUB), 2, expected_pc=7)
+    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_AND), 1, expected_pc=8)
+    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_OR), 15, expected_pc=9)
+    await execute_and_check(dut, r_type(rd=6, rs1=4, rs2=5, funct3=FUNCT_XOR), 14, expected_pc=10)
+    await execute_and_check(dut, r_type(rd=6, rs1=2, rs2=1, funct3=FUNCT_SLL), 32, expected_pc=11)
+    await execute_and_check(dut, r_type(rd=6, rs1=3, rs2=2, funct3=FUNCT_SRL), 6, expected_pc=12)
+    await execute_and_check(dut, i_type(OP_ANDI, rd=6, rs1=5, imm6=6), 0, expected_pc=13)
+    await execute_and_check(dut, i_type(OP_ORI, rd=6, rs1=4, imm6=8), 15, expected_pc=14)
+    await execute_and_check(dut, i_type(OP_XORI, rd=6, rs1=5, imm6=3), 10, expected_pc=15)
+    await execute_and_check(dut, i_type(OP_SLLI, rd=6, rs1=2, imm6=2), 8, expected_pc=16)
+    await execute_and_check(dut, i_type(OP_SRLI, rd=6, rs1=3, imm6=3), 3, expected_pc=17)
+    await execute_and_check(dut, i_type(OP_ADDI, rd=6, rs1=1, imm6=0x3F), 3, expected_pc=18)
 
     dut._log.info("Run memory and branch side-effect sequence")
     await reset_dut(dut)
 
+    await execute_and_check(dut, li_type(rd=1, imm8=4), 4, expected_pc=1)
+    await execute_and_check(dut, li_type(rd=3, imm8=24), 24, expected_pc=2)
+
     # Move r4 to 16, then store r1 at address r4 + 8 = 24.
     # Data memory has 16 entries, so address 24 should use index 8.
-    await execute_and_check(dut, i_type(OP_ADDI, rd=4, rs1=4, imm6=16), 16, expected_pc=1)
-    await execute_and_check(dut, i_type(OP_SW, rd=0, rs1=4, imm6=8), 0, expected_pc=2)
+    await execute_and_check(dut, i_type(OP_ADDI, rd=4, rs1=4, imm6=16), 16, expected_pc=3)
+    await execute_and_check(dut, i_type(OP_SW, rd=0, rs1=4, imm6=8), 0, expected_pc=4)
 
     # This false BEQ produces ALU address 24 - 16 = 8. Before the fix, branch
     # instructions incorrectly asserted MemWrite and corrupted memory[8].
-    await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=3, imm6=16), 0, expected_pc=3)
+    await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=3, imm6=16), 0, expected_pc=5)
 
-    await execute_and_check(dut, i_type(OP_LW, rd=6, rs1=4, imm6=8), 4, expected_pc=4)
-    await execute_and_check(dut, r_type(rd=7, rs1=6, rs2=1, funct3=FUNCT_ADD), 8, expected_pc=5)
+    await execute_and_check(dut, i_type(OP_LW, rd=6, rs1=4, imm6=8), 4, expected_pc=6)
+    await execute_and_check(dut, r_type(rd=7, rs1=6, rs2=1, funct3=FUNCT_ADD), 8, expected_pc=7)
 
     dut._log.info("Run branch PC sequence")
     await reset_dut(dut)
 
-    await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=0, imm6=2), 0, expected_pc=1)
-    await execute_and_check(dut, i_type(OP_BNE, rd=0, rs1=1, imm6=4), 0, expected_pc=2)
-    await execute_and_check(dut, i_type(OP_BLT, rd=0, rs1=3, imm6=5), 0, expected_pc=3)
-    await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=1, imm6=4), 0, expected_pc=7)
-    await execute_and_check(dut, i_type(OP_BNE, rd=0, rs1=0, imm6=0x3F), 0, expected_pc=6)
-    await execute_and_check(dut, i_type(OP_BLT, rd=0, rs1=2, imm6=5), 0, expected_pc=11)
+    await execute_and_check(dut, li_type(rd=1, imm8=4), 4, expected_pc=1)
+    await execute_and_check(dut, li_type(rd=2, imm8=2), 2, expected_pc=2)
+    await execute_and_check(dut, li_type(rd=3, imm8=24), 24, expected_pc=3)
+    await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=0, imm6=2), 0, expected_pc=4)
+    await execute_and_check(dut, i_type(OP_BNE, rd=0, rs1=1, imm6=4), 0, expected_pc=5)
+    await execute_and_check(dut, i_type(OP_BLT, rd=0, rs1=3, imm6=5), 0, expected_pc=6)
+    await execute_and_check(dut, i_type(OP_BEQ, rd=0, rs1=1, imm6=4), 0, expected_pc=10)
+    await execute_and_check(dut, i_type(OP_BNE, rd=0, rs1=0, imm6=0x3F), 0, expected_pc=9)
+    await execute_and_check(dut, i_type(OP_BLT, rd=0, rs1=2, imm6=5), 0, expected_pc=14)
 
     dut._log.info("Run signed BLT edge cases")
     await reset_dut(dut)
 
-    # Signed comparison: 1 is not less than -1. An unsigned comparison would
+    # Signed comparison: 0 is not less than -1. An unsigned comparison would
     # incorrectly take this branch because 0xFF represents 255.
     await execute_and_check(
         dut,

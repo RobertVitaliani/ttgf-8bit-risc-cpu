@@ -93,14 +93,14 @@ After reset:
 
 | Register | Value |
 | --- | --- |
-| `r0` | `1` |
-| `r1` | `4` |
-| `r2` | `2` |
-| `r3` | `24` |
+| `r0` | `0` |
+| `r1` | `0` |
+| `r2` | `0` |
+| `r3` | `0` |
 | `r4` | `0` |
-| `r5` | `4` |
-| `r6` | `2` |
-| `r7` | `24` |
+| `r5` | `0` |
+| `r6` | `0` |
+| `r7` | `0` |
 
 ### Data Memory
 
@@ -231,17 +231,17 @@ flags. The less-than comparison is signed, so both operands are interpreted as
 
 ### Example 1: Basic Register And ALU Sequence
 
-After reset, `r1 = 4` and `r4 = 0`.
-
 | Step | Instruction | Encoding | Result on `uo_out` |
 | --- | --- | --- | --- |
-| 1 | `ADDI r4, r1, 3` | `0x1843` | `7` |
-| 2 | `ADDI r5, r4, 2` | `0x1B02` | `9` |
-| 3 | `ADD r6, r4, r5` | `0x0D28` | `16` |
+| 1 | `LI r1, 4` | `0x2204` | `4` |
+| 2 | `ADDI r4, r1, 3` | `0x1843` | `7` |
+| 3 | `ADDI r5, r4, 2` | `0x1B02` | `9` |
+| 4 | `ADD r6, r4, r5` | `0x0D28` | `16` |
 
 Explanation:
 
 ```text
+r1 = 4
 r4 = 4 + 3 = 7
 r5 = 7 + 2 = 9
 r6 = 7 + 9 = 16
@@ -259,29 +259,27 @@ and acts as `-1` in the 8-bit datapath.
 
 ### Example 3: Store And Load
 
-After reset, `r1 = 4` and `r4 = 0`.
-
 | Step | Instruction | Encoding | Effect |
 | --- | --- | --- | --- |
-| 1 | `ADDI r4, r4, 16` | `0x1910` | `r4 = 16` |
-| 2 | `SW r1, [r4 + 8]` | `0x4108` | writes `4` to memory index `8` |
-| 3 | `LW r6, [r4 + 8]` | `0x3D08` | `r6 = 4` |
+| 1 | `LI r1, 4` | `0x2204` | `r1 = 4` |
+| 2 | `ADDI r4, r4, 16` | `0x1910` | `r4 = 16` |
+| 3 | `SW r1, [r4 + 8]` | `0x4108` | writes `4` to memory index `8` |
+| 4 | `LW r6, [r4 + 8]` | `0x3D08` | `r6 = 4` |
 
 The address is `16 + 8 = 24`. Because data memory uses only the lower 4 address
 bits, address `24` accesses memory index `8`.
 
 ### Example 4: Taken Branch
 
-After reset, `r1 = 4`.
+| Step | Instruction | Encoding | Behavior |
+| --- | --- | --- | --- |
+| 1 | `LI r1, 4` | `0x2204` | `r1 = 4` |
+| 2 | `BEQ r1, 4` | `0x5044` | branch is taken |
 
-| Instruction | Encoding | Behavior |
-| --- | --- | --- |
-| `BEQ r1, 4` | `0x5044` | branch is taken |
-
-If the current PC is `0`, the next PC becomes:
+After `LI`, the current PC is `1`, so the taken branch updates it to:
 
 ```text
-pc + imm6 = 0 + 4 = 4
+pc + imm6 = 1 + 4 = 5
 ```
 
 ## Running The RTL Simulation

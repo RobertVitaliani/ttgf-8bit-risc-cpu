@@ -22,14 +22,14 @@ module Registers (
 
     always @(posedge rst or posedge clk) begin
         if(rst) begin
-            register_0 <= 1;
-            register_1 <= 4;
-            register_2 <= 2;
-            register_3 <= 24;
-            register_4 <= 0;
-            register_5 <= 4;
-            register_6 <= 2;
-            register_7 <= 24;
+            register_0 <= 8'b0;
+            register_1 <= 8'b0;
+            register_2 <= 8'b0;
+            register_3 <= 8'b0;
+            register_4 <= 8'b0;
+            register_5 <= 8'b0;
+            register_6 <= 8'b0;
+            register_7 <= 8'b0;
         end
         else if(RegWrite) begin
             case (rd)
